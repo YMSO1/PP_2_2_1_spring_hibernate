@@ -13,6 +13,9 @@ public class Car {
     @Column(name = "series")
     private int series;
 
+    @OneToOne(mappedBy = "usersCar", cascade = CascadeType.ALL)
+    private User carUser;
+
     public Car() {
     }
 
@@ -45,11 +48,16 @@ public class Car {
         this.series = series;
     }
 
+    public User getCarUser() {
+        return carUser;
+    }
+
+    public void setCarUser(User carUser) {
+        this.carUser = carUser;
+    }
+
     @Override
     public String toString() {
-        return "Car{" +
-                "model='" + model + '\'' +
-                ", series=" + series +
-                '}';
+        return "model: " + model + ", series: " + series;
     }
 }

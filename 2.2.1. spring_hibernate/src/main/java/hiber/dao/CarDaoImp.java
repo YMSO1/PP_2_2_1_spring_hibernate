@@ -1,10 +1,13 @@
 package hiber.dao;
 
 import hiber.model.Car;
+import hiber.model.User;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -23,5 +26,15 @@ public class CarDaoImp implements CarDao{
     public List<Car> listCar() {
         TypedQuery<Car> query=sessionFactory.getCurrentSession().createQuery("from Car");
         return query.getResultList();
+    }
+
+    @Override
+    public User getCarUser(String model, int series) throws NoResultException {
+        String getCarUser = "from Car where model = :model AND series = :series";
+
+        Query<Car> query = sessionFactory.getCurrentSession().createQuery(getCarUser);
+        query.setParameter("model", model).setParameter("series", series);
+        Car car = query.getSingleResult();
+        return car.getCarUser();
     }
 }
