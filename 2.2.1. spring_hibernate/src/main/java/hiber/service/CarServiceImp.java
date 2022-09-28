@@ -8,13 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
 public class CarServiceImp implements CarService{
-    @Autowired
     private CarDao carDao;
+
+    public CarServiceImp() {
+    }
+
+    @Autowired
+    public CarServiceImp(CarDao carDao) {
+        this.carDao = carDao;
+    }
 
     @Transactional
     @Override
@@ -30,7 +36,7 @@ public class CarServiceImp implements CarService{
 
     @Transactional(readOnly = true)
     @Override
-    public User getCarUser(String model, int series) throws NoResultException {
+    public User getCarUser(String model, int series) {
         return carDao.getCarUser(model, series);
     }
 }

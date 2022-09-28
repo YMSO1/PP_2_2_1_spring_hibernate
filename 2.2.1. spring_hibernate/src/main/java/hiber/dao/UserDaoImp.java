@@ -11,9 +11,14 @@ import java.util.List;
 
 @Repository
 public class UserDaoImp implements UserDao {
+   private SessionFactory sessionFactory;
+
+   public UserDaoImp() {   }
 
    @Autowired
-   private SessionFactory sessionFactory;
+   public UserDaoImp(SessionFactory sessionFactory) {
+      this.sessionFactory = sessionFactory;
+   }
 
    @Override
    public void add(User user) {
@@ -21,19 +26,24 @@ public class UserDaoImp implements UserDao {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
+      String getListUser = "select user from User user";
+
+      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery(getListUser, User.class);
       return query.getResultList();
    }
 
    @Override
-   public User getCarUser(String model, int series) throws NoResultException {
-      String getCarUser = "from User user where user.usersCar.model = :model and user.usersCar.series = :series";
+   public User getCarUser(String model, int series) {
+      String getCarUser = "select user from User user where user.usersCar.model = :model and user.usersCar.series = :series";
 
-      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery(getCarUser);
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery(getCarUser, User.class);
       query.setParameter("model", model).setParameter("series", series);
-      User user = query.setMaxResults(1).getSingleResult();
-      return user;
+      try {
+         return query.setMaxResults(1).getSingleResult();
+      } catch (NoResultException e) {
+         System.out.println("Нет User'а с таким Car'ом" );
+      }
+      return null;
    }
 }
